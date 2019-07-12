@@ -1,6 +1,7 @@
+Set-Location "C:\RDS\Scripts\Reset-Session"
 $icon = "$pwd\icon.png"
 $logo = "$pwd\logo.png"
-Set-Location "C:\RDS\Scripts\Reset-Session"
+
 #Your XAML goes here :)
 $inputXML = @"
 <Window x:Class="ResetUserSession.MainWindow"
