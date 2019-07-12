@@ -1,6 +1,6 @@
 # Reset-Session
 
-[![PowerShell](https://img.shields.io/badge/language-PowerShell%205.0+-blue.svg?style=flat-square)]
+![PowerShell](https://img.shields.io/badge/language-PowerShell%205.0+-blue.svg?style=flat-square)
 
 Simple script to let a user reset their session. GUI is done using XAML with WPF (Not windows forms).
 
