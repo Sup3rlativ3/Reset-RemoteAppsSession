@@ -11,4 +11,7 @@ Simple script to let a user reset their session. GUI is done using XAML with WPF
 * [Visual Studio](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=15) (Used for the TF.Exe to sync with Azure DevOps and to design the XAML GUI)
 * Azure repos extension for VSCode.
 * [Git](https://git-scm.com/downloads)
-  
+
+## Screenshots
+
+![screenshot][screenshot.png]
