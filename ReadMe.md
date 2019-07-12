@@ -14,4 +14,4 @@ Simple script to let a user reset their session. GUI is done using XAML with WPF
 
 ## Screenshots
 
-![screenshot][screenshot.png]
+![screenshot](screenshot.png)
