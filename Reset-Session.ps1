@@ -1,36 +1,9 @@
-Set-Location "C:\RDS\Scripts\Reset-Session"
+Set-Location $psscriptroot
 $icon = "$pwd\icon.png"
 $logo = "$pwd\logo.png"
 
 #Your XAML goes here :)
-$inputXML = @"
-<Window x:Class="ResetUserSession.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ResetUserSession"
-        mc:Ignorable="d"
-        Title="BOYCE RDS SESSION RESET" Height="550.326" Width="414.368" FontSize="16" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="$icon">
-    <Grid Grid.IsSharedSizeScope="True">
-        <Image HorizontalAlignment="Left" Height="100" Margin="10,10,0,0" VerticalAlignment="Top" Width="331.701" Source="$logo"/>
-        <Label x:Name="lbl_User" Content="User:" HorizontalAlignment="Left" Margin="34.332,156.833,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="lbl_server" Content="Server" HorizontalAlignment="Left" Margin="34.332,193.113,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="lbl_Server_Value" Content="Servername" HorizontalAlignment="Left" Margin="132.333,193.113,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="lbl_User_Value" Content="Username" HorizontalAlignment="Left" Margin="132.333,156.833,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="lbl_Application" Content="Application" HorizontalAlignment="Left" Margin="34.332,229.393,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="lbl_Reason" Content="Reason" HorizontalAlignment="Left" Margin="34.332,298.047,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <ComboBox x:Name="cbo_Application" HorizontalAlignment="Left" Margin="132.333,238.713,0,0" VerticalAlignment="Top" Width="248.035"/>
-        <RichTextBox x:Name="rtb_Reason" HorizontalAlignment="Left" Height="154" Margin="132.333,298.047,0,0" VerticalAlignment="Top" Width="248.035">
-            <FlowDocument/>
-        </RichTextBox>
-        <Button x:Name="btn_Submit" Content="Reset" HorizontalAlignment="Left" Margin="305.368,469.04,0,0" VerticalAlignment="Top" Width="75" Height="31.293"/>
-        <Label x:Name="lbl_Application_Error" Content="Required" HorizontalAlignment="Left" Height="27.374" Margin="34.332,248.673,0,0" VerticalAlignment="Top" Width="76.001" Foreground="Red" FontSize="12" Visibility="Hidden"/>
-        <Button x:Name="btn_Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="225.368,469.04,0,0" VerticalAlignment="Top" Width="75" Height="31.293" IsCancel="True"/>
-        <Label x:Name="lbl_Reason_Error" Content="Required" HorizontalAlignment="Left" Height="27.374" Margin="34.332,317.327,0,0" VerticalAlignment="Top" Width="76.001" Foreground="Red" FontSize="12" Visibility="Hidden"/>
-    </Grid>
-</Window>
-"@ 
+$inputXML = Get-Content .\main.xaml -Raw
  
 $inputXML = $inputXML -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^<Win.*', '<Window'
 [void][System.Reflection.Assembly]::LoadWithPartialName('presentationframework')
@@ -75,6 +48,8 @@ Get-FormVariables
 # Use this space to add code to the various form elements in your GUI
 #===========================================================================
 
+$WPFimg_logo.Source = $logo
+$form.icon = $icon
 # Set a date variable
 $mydate = (get-date -U "%Y%m%d %H%M")
 # Define the list of possible servers.

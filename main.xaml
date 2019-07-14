@@ -1,0 +1,75 @@
+<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="BOYCE RDS SESSION RESET" Height="550.326" Width="414.368" FontSize="16" WindowStartupLocation="CenterScreen">
+    <StackPanel Margin="10" >
+        
+        <!-- Logo -->
+        <Grid>
+            <Image x:Name="img_Logo" HorizontalAlignment="Left" Height="100" />
+        </Grid> <!-- End of Logo -->
+        
+        <!-- User information -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label x:Name="lbl_User" Content="User:" FontSize="16" Grid.Column="0" />
+            <Label x:Name="lbl_User_Value" Content="Username" FontSize="16" Grid.Column="1" />
+        </Grid> <!-- End of User information -->
+
+        <!-- Server information -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label x:Name="lbl_server" Content="Server" FontSize="16" Grid.Column="0"/>
+            <Label x:Name="lbl_Server_Value" Content="Servername" FontSize="16" Grid.Column="1"/>
+        </Grid> <!-- End of Server information -->
+
+        <!-- Application & Reason information -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Label x:Name="lbl_Application" Content="Application" FontSize="16" Grid.Column="0" Grid.Row="0"/>
+            <Label x:Name="lbl_Application_Error" Content="Required" Foreground="Red" FontSize="12" Visibility="Hidden" Grid.Column="0" Grid.Row="1"/>
+            <Label x:Name="lbl_Reason" Content="Reason"  FontSize="16" Grid.Column="0" Grid.Row="2"/>
+            <Label x:Name="lbl_Reason_Error" Content="Required" Foreground="Red" FontSize="12" Visibility="Hidden" Grid.Column="0" Grid.Row="3"/>
+            
+            <ComboBox x:Name="cbo_Application" Grid.Column="1" Grid.Row="0"/>
+            <RichTextBox x:Name="rtb_Reason"  Grid.Column="1" Grid.Row="2"/>
+        </Grid> <!-- End of Application & Reason information -->
+
+        <!-- Submiut and Cancel -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+
+            <Button x:Name="btn_Submit" Content="Reset" HorizontalAlignment="Left" Grid.Column="1" />
+            <Button x:Name="btn_Cancel" Content="Cancel" HorizontalAlignment="Left" IsCancel="True" Grid.Column="0"/>
+        </Grid> <!-- End of Submiut and Cancel -->
+
+
+    </StackPanel>
+</Window>
