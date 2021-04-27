@@ -1,15 +1,68 @@
-Set-Location $psscriptroot
-$icon = "$pwd\icon.png"
-$logo = "$pwd\logo.png"
+#region VARs
+# Define the connection broker name.
+$ConnectionBroker = "A-RDGW01.boyceca.com"
+
+# Define the RemoteApps Collection name
+$CollectionName = "Boyce RDS"
+
+# The name of the logo and icon files. Must be in the same dir as the script.
+$Icon = "icon.png"
+$Logo = "logo.png"
+
+# Define the list of possible servers.
+$Servers = ("SERVER-1","SERVER-2","SERVER-3")
+
+# List of apps a user can choose from
+# We manually specify because pulling the list of apps from the connection broker requires admin rights.
+$Apps = ("Application 1", "Application 2", "Application 3", "Application 4", "Application 5") | Sort-Object
+
+# The email server
+$PSEmailServer = "my.mailserver.contoso.com"
+#endregion
+
+# Important to set the location or the images break in the GUI.
+$ScriptLoc = $MyInvocation.MyCommand.Path
+$ScriptLoc = Split-Path $ScriptLoc -Parent
+Set-Location $ScriptLoc
+$icon = "$pwd\$Icon"
+$logo = "$pwd\$Logo"
 
 #Your XAML goes here :)
-$inputXML = Get-Content .\main.xaml -Raw
- 
+$inputXML = @"
+<Window x:Class="ResetUserSession.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ResetUserSession"
+        mc:Ignorable="d"
+        Title="CONTOSO RDS SESSION RESET" Height="550.326" Width="414.368" FontSize="16" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="$icon">
+    <Grid Grid.IsSharedSizeScope="True">
+        <Image HorizontalAlignment="Left" Height="150" Margin="10,10,0,0" VerticalAlignment="Top" Width="650.701" Source="$logo"/>
+        <Label x:Name="lbl_User" Content="User:" HorizontalAlignment="Left" Margin="34.332,156.833,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="lbl_server" Content="Server" HorizontalAlignment="Left" Margin="34.332,193.113,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="lbl_Server_Value" Content="Servername" HorizontalAlignment="Left" Margin="132.333,193.113,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="lbl_User_Value" Content="Username" HorizontalAlignment="Left" Margin="132.333,156.833,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="lbl_Application" Content="Application" HorizontalAlignment="Left" Margin="34.332,229.393,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="lbl_Reason" Content="Reason" HorizontalAlignment="Left" Margin="34.332,298.047,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <ComboBox x:Name="cbo_Application" HorizontalAlignment="Left" Margin="132.333,238.713,0,0" VerticalAlignment="Top" Width="248.035"/>
+        <RichTextBox x:Name="rtb_Reason" HorizontalAlignment="Left" Height="154" Margin="132.333,298.047,0,0" VerticalAlignment="Top" Width="248.035">
+            <FlowDocument/>
+        </RichTextBox>
+        <Button x:Name="btn_Submit" Content="Reset" HorizontalAlignment="Left" Margin="305.368,469.04,0,0" VerticalAlignment="Top" Width="75" Height="31.293"/>
+        <Label x:Name="lbl_Application_Error" Content="Required" HorizontalAlignment="Left" Height="27.374" Margin="34.332,248.673,0,0" VerticalAlignment="Top" Width="76.001" Foreground="Red" FontSize="12" Visibility="Hidden"/>
+        <Button x:Name="btn_Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="225.368,469.04,0,0" VerticalAlignment="Top" Width="75" Height="31.293" IsCancel="True"/>
+        <Label x:Name="lbl_Reason_Error" Content="Required" HorizontalAlignment="Left" Height="27.374" Margin="34.332,317.327,0,0" VerticalAlignment="Top" Width="76.001" Foreground="Red" FontSize="12" Visibility="Hidden"/>
+    </Grid>
+</Window>
+"@ 
+
+# The below code for the XAML objects was copied from https://www.foxdeploy.com/series/snippet-xamlToGui
 $inputXML = $inputXML -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^<Win.*', '<Window'
 [void][System.Reflection.Assembly]::LoadWithPartialName('presentationframework')
 [xml]$XAML = $inputXML
-#Read XAML
- 
+
+#Read XAML 
 $reader = (New-Object System.Xml.XmlNodeReader $xaml)
 try {
     $Form = [Windows.Markup.XamlReader]::Load( $reader )
@@ -18,8 +71,6 @@ catch {
     Write-Warning "Unable to parse XML, with error: $($Error[0])`n Ensure that there are NO SelectionChanged or TextChanged properties in your textboxes (PowerShell cannot process them)"
     throw
 }
-
-#$form.ShowInTaskbar = $false
 
 #===========================================================================
 # Load XAML Objects In PowerShell
@@ -48,22 +99,16 @@ Get-FormVariables
 # Use this space to add code to the various form elements in your GUI
 #===========================================================================
 
-$WPFimg_logo.Source = $logo
-$form.icon = $icon
 # Set a date variable
 $mydate = (get-date -U "%Y%m%d %H%M")
+
 # Define the list of possible servers.
-$Servers = ("A-RDS01","A-RDS02","A-RDS03")
+$Servers = ("SERVER-1","SERVER-2","SERVER-3")
 
 # Define email variables.
-$PSEmailServer = "boyceca-com.mail.protection.outlook.com"
 $HTMLHead = $null
 $HTMLBody = $null
 $Body = $null
-
-
-# Define the list of apps that the user can choose from.
-$Apps = ("APS","Batch Processing/Tax Lodgement","Central Console","Helpdesk","KIES","Phoenix Live","Tax Manager","Timesheets","Fees","Remote Desktop Connections") | Sort-Object
 
 # Who is running this script.
 $User = $env:username
@@ -118,7 +163,7 @@ $WPFbtn_Submit.Add_Click({
       $WPFbtn_Submit.IsEnabled = "False"
       $WPFlbl_Reason_Error.Visibility = "Hidden"
       $WPFrtb_Reason.BorderBrush = "#FFABADB3"
-        $HTMLBody += @"
+      $HTMLBody += @"
 <!doctype html>
 <html>
   <head>
@@ -213,7 +258,8 @@ $WPFbtn_Submit.Add_Click({
                         <td class="wrapper" style="font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;">
                         <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
                             <tr>
-                                <td><img height="auto" src="https://cpb-ap-se2.wpmucdn.com/blog.une.edu.au/dist/e/1353/files/2018/01/Boyce-CA-2013-Horizontal-Standard-1ouf6c5.png" style="border: 0;display: block;outline: none;text-decoration: none;height: auto;width: 100%;line-height: 100%;-ms-interpolation-mode: bicubic;" width="180"></td>
+                                <!-- ADJUST THE BELOW IMAGE TO CHANGE THE EMAIL LOGO. SHOULD BE PUBLIC AND HTTPS. -->
+                                <td><img height="auto" src="https://myimages.blob.core.windows.net/readonly/CONTOSO-logo.png" style="border: 0;display: block;outline: none;text-decoration: none;height: auto;width: 100%;line-height: 100%;-ms-interpolation-mode: bicubic;" width="180"></td>
                             </tr>
                             <hr />
                             <tr></tr>
@@ -232,11 +278,11 @@ $WPFbtn_Submit.Add_Click({
                                     <th style="padding: 0 500 0 0;">Reason</th>
                                 </tr>
                                 <tr>
-                                    <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0 10 0 0;">$MyDate</td>
-                                    <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0 10 0 0;">$User</td>
-                                    <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0 10 0 0;">$env:COMPUTERNAME</td>
-                                    <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0 10 0 0;">$($WPFcbo_Application.Text)</td>
-                                    <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">$($WPFrtb_Reason.Selection.Text)</td>
+                                    <td id="date" style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0 10 0 0;">$MyDate</td>
+                                    <td id="user" style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0 10 0 0;">$User</td>
+                                    <td id="server" style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0 10 0 0;">$env:COMPUTERNAME</td>
+                                    <td id="app" style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0 10 0 0;">$($WPFcbo_Application.Text)</td>
+                                    <td id="reason" style="font-family: sans-serif; font-size: 14px; vertical-align: top;">$($WPFrtb_Reason.Selection.Text)</td>
                                 </tr>
                             </table>
                         </table>
@@ -253,8 +299,9 @@ $WPFbtn_Submit.Add_Click({
 </html>
 "@
 [string]$Body = ConvertTo-Html -Head $HTMLHead -Body $HTMLBody
-        Send-MailMessage -From "RDS_Reset@boyceca.com" -To "jsmith@boyceca.com" -Subject "RDS reset by $User" -BodyAsHtml -Body $Body
+        Send-MailMessage -From "RDS_Reset@Contoso.com" -To "Alerts@Contoso.com" -Subject "RDS reset by $User" -BodyAsHtml -Body $Body
     
+    # Make sure the user session on other servers are logged off. This hasn't been an issue on RemoteApps but it was on Citrix.
     foreach ($Server in $Servers) 
     {
         If ($Server -ne $LocalServer)
@@ -263,7 +310,7 @@ $WPFbtn_Submit.Add_Click({
             }
 
     }
-
+# Log the session off the current server.
 qwinsta /Server:$LocalServer | Where-Object{$_ -like "*$user*"} | LogOff
 $WPFbtn_Submit.IsEnabled = "True"
   }
