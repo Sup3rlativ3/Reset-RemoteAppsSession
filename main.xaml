@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="BOYCE RDS SESSION RESET" Height="550.326" Width="414.368" FontSize="16" WindowStartupLocation="CenterScreen">
+        Title="RemoteApp Session Reset Tool" Height="550.326" Width="414.368" FontSize="16" WindowStartupLocation="CenterScreen">
     <StackPanel Margin="10" >
         
         <!-- Logo -->
