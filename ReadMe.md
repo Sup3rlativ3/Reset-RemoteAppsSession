@@ -28,7 +28,7 @@ Simple script to let a user reset their RemoteApps session. GUI is done using XA
 10. Change the "RemoteApp program name" to something friendly like "Reset Session Tool"
 11. Choose "Parameters" from the left hand menu.
 12. Choose "Always use the following command-line parameters"
-13. Enter in the box: -ExecutionPolicy Bypass -WindowStyle Hidden -File "<LOCAL PATH OF YOUR PS1 FILE>"
+13. Enter in the box: -ExecutionPolicy Bypass -WindowStyle Hidden -File "LOCAL PATH OF YOUR PS1 FILE"
 14. Choose "OK"
 
 ## Screenshots
